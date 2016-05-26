@@ -1,0 +1,10 @@
+.DS_Store
+.sass-cache
+.log
+Desktop.ini
+node_modules
+npm-debug.log
+/node_env.sh
+*.swp
+/geotrek-rando-deploy/
+/makerscience/

@@ -1,4 +1,3 @@
-
 {% set cfg = opts['ms_project'] %}
 {# export macro to callees #}
 {% set locs = salt['mc_locations.settings']() %}
@@ -43,7 +42,7 @@
                 fi
             done
             "{{locs.resetperms}}" -q --no-acls --no-recursive\
-              --user root --group root --dmode '0555' --fmode '0555' \
+              --user root --group root --dmode '0551' --fmode '0555' \
               --paths "{{cfg.project_dir}}/global-reset-perms.sh" \
               --paths "{{cfg.project_root}}"/.. \
               --paths "{{cfg.project_root}}"/../..;
@@ -53,19 +52,3 @@
     - user: root
     - watch:
       - file: {{cfg.name}}-restricted-perms
-
-{{cfg.name}}-fixperms:
-{% if cfg.data.get('fixperms_cron_periodicity', '') %}
-  file.managed:
-    - name: /etc/cron.d/{{cfg.name.replace('.', '_')}}-fixperms
-    - user: root
-    - mode: 744
-    - contents: |
-                {{cfg.data.fixperms_cron_periodicity}} root {{cfg.project_dir}}/global-reset-perms.sh >/dev/null 2>&1
-{%else%}
-  file.absent:
-    - name: /etc/cron.d/{{cfg.name.replace('.', '_')}}-fixperms
-{% endif %}
-    - require:
-      - file: {{cfg.name}}-restricted-perms
-
